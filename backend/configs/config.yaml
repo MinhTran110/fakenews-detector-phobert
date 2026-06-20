@@ -1,0 +1,48 @@
+data:
+  train_path: data/processed/train.csv
+  val_path:   data/processed/val.csv
+  test_path:  data/processed/test.csv
+  text_col:   text
+  label_col:  label
+  max_length: 256
+  val_size:   0.15
+  test_size:  0.15
+  seed:       42
+
+model:
+  pretrained:         vinai/phobert-base-v2
+  pooling:            cls_mean_max
+  freeze_layers:      8
+  hidden_dropout:     0.1
+  classifier_dropout: 0.3
+
+training:
+  output_dir:                  checkpoints
+  num_epochs:                  5
+  train_batch_size:            8
+  eval_batch_size:             16
+  learning_rate_bert:          2.0e-5
+  learning_rate_head:          1.0e-4
+  warmup_ratio:                0.1
+  weight_decay:                0.01
+  max_grad_norm:               1.0
+  fp16:                        false
+  gradient_accumulation_steps: 4
+  early_stopping_patience:     3
+  pos_weight:                  null
+
+inference:
+  threshold: 0.5
+
+scraper:
+  timeout:         15
+  min_content_len: 100
+  max_content_len: 8000
+
+logging:
+  log_dir:   logs
+  log_steps: 50
+
+api:
+  host: 0.0.0.0
+  port: 8000

@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+
+# Model checkpoints - quá nặng, không đẩy lên Git
+backend/checkpoints/
+backend/logs/
+backend/data/raw/
+backend/data/processed/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.swp
