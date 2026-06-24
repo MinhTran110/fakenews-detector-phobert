@@ -45,13 +45,14 @@
 }
 
 .historyItem {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 10px 42px 10px 14px; /* Chừa khoảng trống bên phải cho nút xóa */
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -61,11 +62,33 @@
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+.deleteItemBtn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: all 0.2s;
+  z-index: 2; /* Nằm trên thẻ để bấm được */
+}
+
+.deleteItemBtn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
 .itemMain {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-width: 75%;
+  max-width: 80%;
 }
 
 .itemLabel {

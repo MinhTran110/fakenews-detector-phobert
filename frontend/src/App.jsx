@@ -225,6 +225,13 @@ export default function App() {
     localStorage.removeItem("fakenews_history");
   };
 
+  const deleteHistoryItem = (id, e) => {
+    e.stopPropagation(); // Ngăn sự kiện click vào item kích hoạt xem lại kết quả
+    const newHistory = history.filter(h => h.id !== id);
+    setHistory(newHistory);
+    localStorage.setItem("fakenews_history", JSON.stringify(newHistory));
+  };
+
   const handleHistoryClick = (item) => {
     setTab(item.type);
     setForcedResult(item);
@@ -333,7 +340,14 @@ export default function App() {
                       <span className={hStyles.itemLabel}>{item.label}</span>
                       <span className={hStyles.itemMeta}>Loại: {item.type === "url" ? "URL" : "Đoạn văn"} · lúc {item.timestamp}</span>
                     </div>
-                    <span className={badgeClass}>{badgeText}</span>
+                    <span className={badgeClass} style={{ marginRight: 24 }}>{badgeText}</span>
+                    <button
+                      className={hStyles.deleteItemBtn}
+                      onClick={(e) => deleteHistoryItem(item.id, e)}
+                      title="Xóa dòng này"
+                    >
+                      &times;
+                    </button>
                   </div>
                 );
               })}
