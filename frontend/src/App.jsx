@@ -1,8 +1,9 @@
 // src/App.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePredictor } from "./hooks/usePredictor";
 import { ResultCard }   from "./components/ResultCard";
 import styles from "./App.module.css";
+import hStyles from "./History.module.css";
 
 const SUPPORTED_SITES = [
   "vnexpress.net", "tuoitre.vn", "thanhnien.vn",
@@ -22,19 +23,39 @@ function Spinner({ step }) {
 }
 
 // ── URL Tab ──────────────────────────────────────────────────────────────
-function UrlTab() {
+function UrlTab({ onAddHistory, forcedResult, onResetForce }) {
   const [url, setUrl] = useState("");
   const [threshold, setThreshold] = useState(0.5);
-  const { loading, result, error, step, predictUrl, reset } = usePredictor();
+  const { loading, result, error, step, predictUrl, reset, setResult } = usePredictor();
+
+  useEffect(() => {
+    if (forcedResult && forcedResult.type === "url") {
+      setUrl(forcedResult.url);
+      setThreshold(forcedResult.threshold || 0.5);
+      setResult(forcedResult.result);
+      onResetForce();
+    }
+  }, [forcedResult]);
 
   const valid = (() => {
     try { new URL(url); return url.startsWith("http"); }
     catch { return false; }
   })();
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!valid) return;
-    predictUrl(url, threshold);
+    const data = await predictUrl(url, threshold);
+    if (data) {
+      onAddHistory({
+        id: "url-" + Date.now(),
+        type: "url",
+        label: url,
+        url: url,
+        threshold: threshold,
+        result: data,
+        timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+      });
+    }
   }
 
   return (
@@ -95,10 +116,35 @@ function UrlTab() {
 }
 
 // ── Text Tab ─────────────────────────────────────────────────────────────
-function TextTab() {
+function TextTab({ onAddHistory, forcedResult, onResetForce }) {
   const [text, setText] = useState("");
   const [threshold, setThreshold] = useState(0.5);
-  const { loading, result, error, step, predictText, reset } = usePredictor();
+  const { loading, result, error, step, predictText, reset, setResult } = usePredictor();
+
+  useEffect(() => {
+    if (forcedResult && forcedResult.type === "text") {
+      setText(forcedResult.text);
+      setThreshold(forcedResult.threshold || 0.5);
+      setResult(forcedResult.result);
+      onResetForce();
+    }
+  }, [forcedResult]);
+
+  async function handleSubmit() {
+    if (text.length < 20) return;
+    const data = await predictText(text, threshold);
+    if (data) {
+      onAddHistory({
+        id: "text-" + Date.now(),
+        type: "text",
+        label: text.substring(0, 36) + "...",
+        text: text,
+        threshold: threshold,
+        result: data,
+        timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+      });
+    }
+  }
 
   return (
     <div>
@@ -134,7 +180,7 @@ function TextTab() {
       )}
 
       <button
-        onClick={() => text.length >= 20 && predictText(text, threshold)}
+        onClick={handleSubmit}
         disabled={loading || text.length < 20}
         className={`${styles.button} ${(loading || text.length < 20) ? styles.buttonDisabled : ""}`}
       >
@@ -157,6 +203,32 @@ const TABS = [
 
 export default function App() {
   const [tab, setTab] = useState("url");
+  const [history, setHistory] = useState([]);
+  const [forcedResult, setForcedResult] = useState(null);
+
+  // Load history from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("fakenews_history");
+    if (saved) {
+      try { setHistory(JSON.parse(saved)); } catch (e) {}
+    }
+  }, []);
+
+  const addHistoryItem = (item) => {
+    const newHistory = [item, ...history.filter(h => h.label !== item.label)].slice(0, 5);
+    setHistory(newHistory);
+    localStorage.setItem("fakenews_history", JSON.stringify(newHistory));
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem("fakenews_history");
+  };
+
+  const handleHistoryClick = (item) => {
+    setTab(item.type);
+    setForcedResult(item);
+  };
 
   return (
     <>
@@ -213,10 +285,61 @@ export default function App() {
 
           {/* Tab content */}
           <div className={styles.cardBody}>
-            {tab === "url"  && <UrlTab />}
-            {tab === "text" && <TextTab />}
+            {tab === "url"  && (
+              <UrlTab
+                onAddHistory={addHistoryItem}
+                forcedResult={forcedResult}
+                onResetForce={() => setForcedResult(null)}
+              />
+            )}
+            {tab === "text" && (
+              <TextTab
+                onAddHistory={addHistoryItem}
+                forcedResult={forcedResult}
+                onResetForce={() => setForcedResult(null)}
+              />
+            )}
           </div>
         </div>
+
+        {/* History Section */}
+        {history.length > 0 && (
+          <div className={hStyles.historySection}>
+            <div className={hStyles.historyHeader}>
+              <span className={hStyles.historyTitle}>Lịch sử kiểm tra gần đây</span>
+              <button className={hStyles.clearBtn} onClick={clearHistory}>Xóa tất cả</button>
+            </div>
+            <div className={hStyles.historyList}>
+              {history.map(item => {
+                const fakePct = Math.round(item.result.prob_fake * 100);
+                let badgeClass = hStyles.badgeNeutral;
+                let badgeText = `Nghi vấn ${fakePct}%`;
+
+                if (fakePct > 65) {
+                  badgeClass = hStyles.badgeFake;
+                  badgeText = `Giả ${fakePct}%`;
+                } else if (fakePct < 35) {
+                  badgeClass = hStyles.badgeReal;
+                  badgeText = `Thật ${100 - fakePct}%`;
+                }
+
+                return (
+                  <div
+                    key={item.id}
+                    className={hStyles.historyItem}
+                    onClick={() => handleHistoryClick(item)}
+                  >
+                    <div className={hStyles.itemMain}>
+                      <span className={hStyles.itemLabel}>{item.label}</span>
+                      <span className={hStyles.itemMeta}>Loại: {item.type === "url" ? "URL" : "Đoạn văn"} · lúc {item.timestamp}</span>
+                    </div>
+                    <span className={badgeClass}>{badgeText}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <footer className={styles.footer}>
@@ -234,4 +357,5 @@ export default function App() {
     </>
   );
 }
+
 

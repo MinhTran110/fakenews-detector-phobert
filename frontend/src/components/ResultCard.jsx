@@ -2,14 +2,40 @@
 export function ResultCard({ result }) {
   if (!result) return null;
 
-  const isFake    = result.label === "FAKE";
-  const accent    = isFake ? "#ef4444" : "#22c55e";
-  const bgColor   = isFake ? "rgba(239,68,68,0.08)" : "rgba(34,197,94,0.08)";
-  const border    = isFake ? "rgba(239,68,68,0.25)" : "rgba(34,197,94,0.25)";
-  const icon      = isFake ? "⚠" : "✓";
-  const headline  = isFake ? "Có khả năng là tin giả" : "Có vẻ đáng tin cậy";
   const fakePct   = Math.round(result.prob_fake * 100);
   const realPct   = 100 - fakePct;
+
+  // Xác định 3 cấp độ cảnh báo dựa trên xác suất Fake (fakePct)
+  let status = "neutral"; // "real" | "neutral" | "fake"
+  if (fakePct > 65) {
+    status = "fake";
+  } else if (fakePct < 35) {
+    status = "real";
+  }
+
+  // Tùy biến UI theo cấp độ cảnh báo
+  let accent = "#fbbf24"; // Màu vàng mặc định cho nghi vấn/trung lập
+  let bgColor = "rgba(251,191,36,0.08)";
+  let border = "rgba(251,191,36,0.25)";
+  let icon = "⚠";
+  let headline = "Chưa rõ ràng / Cần lưu ý";
+  let descriptionText = "Hệ thống phát hiện một số dấu hiệu đáng ngờ nhưng chưa đủ cơ sở để kết luận. Bạn nên kiểm chứng thêm thông tin.";
+
+  if (status === "fake") {
+    accent = "#ef4444"; // Đỏ cho tin giả
+    bgColor = "rgba(239,68,68,0.08)";
+    border = "rgba(239,68,68,0.25)";
+    icon = "🚨";
+    headline = "Nguy cơ tin giả cao";
+    descriptionText = "Hệ thống phát hiện tỷ lệ thông tin không chính xác hoặc giật gân rất lớn. Hãy hết sức cân nhắc trước khi chia sẻ.";
+  } else if (status === "real") {
+    accent = "#22c55e"; // Xanh cho tin cậy
+    bgColor = "rgba(34,197,94,0.08)";
+    border = "rgba(34,197,94,0.25)";
+    icon = "✓";
+    headline = "Tin cậy cao";
+    descriptionText = "Nội dung bài viết có cấu trúc hành văn chuẩn mực và các chỉ số đều an toàn. Tuy nhiên, vẫn nên đọc nguồn uy tín.";
+  }
 
   return (
     <div style={{
@@ -22,11 +48,17 @@ export function ResultCard({ result }) {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         <div style={{
-          width: 56, height: 56, borderRadius: "50%",
-          background: accent, flexShrink: 0,
-          display: "flex", alignItems: "center",
+          width: 56,
+          height: 56,
+          borderRadius: "50%",
+          background: accent,
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
           justifyContent: "center",
-          fontSize: 26, color: "#fff", fontWeight: 900,
+          fontSize: 26,
+          color: status === "neutral" ? "#000" : "#fff",
+          fontWeight: 900,
         }}>{icon}</div>
         <div>
           <div style={{
@@ -34,9 +66,9 @@ export function ResultCard({ result }) {
             fontFamily: "'Syne', sans-serif",
           }}>{headline}</div>
           <div style={{ fontSize: 13, color: "var(--muted)", marginTop: 4 }}>
-            Độ tin cậy:{" "}
+            Chỉ số tin giả:{" "}
             <strong style={{ color: accent }}>
-              {Math.round(result.confidence * 100)}%
+              {fakePct}%
             </strong>
             {result.processing_time_ms && (
               <span style={{ marginLeft: 10, opacity: 0.6 }}>
@@ -54,10 +86,10 @@ export function ResultCard({ result }) {
       <div style={{ marginTop: 20 }}>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: "#ef4444" }}>
-            FAKE {fakePct}%
+            Mức độ giả {fakePct}%
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 2, color: "#22c55e" }}>
-            REAL {realPct}%
+            Mức độ thật {realPct}%
           </span>
         </div>
         <div style={{
@@ -67,7 +99,7 @@ export function ResultCard({ result }) {
           <div style={{
             height: "100%", borderRadius: 99,
             width: `${fakePct}%`,
-            background: "linear-gradient(90deg, #ef4444, #f97316)",
+            background: "linear-gradient(90deg, #ef4444, #f97316, #22c55e)",
             transition: "width 0.9s cubic-bezier(.16,1,.3,1)",
           }} />
         </div>
@@ -126,19 +158,17 @@ export function ResultCard({ result }) {
         </div>
       )}
 
-      {/* Disclaimer nếu FAKE */}
-      {isFake && (
-        <div style={{
-          marginTop: 14, padding: "12px 16px",
-          background: "rgba(239,68,68,0.06)",
-          borderRadius: 10, fontSize: 12,
-          color: "var(--muted)", lineHeight: 1.6,
-        }}>
-          <strong style={{ color: "#ef4444" }}>Lưu ý:</strong>{" "}
-          Kết quả do AI phân tích, có thể không chính xác 100%.
-          Hãy kiểm tra từ nhiều nguồn uy tín trước khi chia sẻ.
-        </div>
-      )}
+      {/* Tóm tắt kết luận thân thiện người dùng */}
+      <div style={{
+        marginTop: 14, padding: "12px 16px",
+        background: "rgba(255,255,255,0.02)",
+        borderRadius: 10, fontSize: 12,
+        color: "var(--muted)", lineHeight: 1.6,
+      }}>
+        <strong style={{ color: accent }}>Đánh giá hệ thống:</strong>{" "}
+        {descriptionText}
+      </div>
     </div>
   );
 }
+

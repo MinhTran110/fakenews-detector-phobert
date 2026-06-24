@@ -53,5 +53,8 @@ export function usePredictor() {
   const reset = useCallback(() =>
     setState({ loading: false, result: null, error: null, step: null }), []);
 
-  return { ...state, predictUrl, predictText, reset };
+  const setResult = useCallback((res) =>
+    setState(s => ({ ...s, result: res, error: null, step: null })), []);
+
+  return { ...state, predictUrl, predictText, reset, setResult };
 }
