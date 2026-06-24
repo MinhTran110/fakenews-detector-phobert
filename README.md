@@ -38,7 +38,14 @@ fakenews_url/
 
 ## Chạy nhanh trên Windows (Khuyên dùng)
 
-Dự án đã hỗ trợ sẵn các file script `.bat` giúp cài đặt và kích hoạt tự động trên Windows:
+### Bước 0: Tải mã nguồn về máy
+Mở Git Bash hoặc CMD và chạy lệnh sau để clone project:
+```bash
+git clone https://github.com/MinhTran110/fakenews-detector-phobert.git
+cd fakenews-detector-phobert
+```
+
+Sau đó, tiến hành cài đặt và kích hoạt tự động bằng các file script `.bat`:
 
 1. **Cài đặt lần đầu:** Click đúp vào file [setup.bat](file:///c:/Users/Administrator/Downloads/fakenews_url/fakenews_url/setup.bat) (hoặc chạy trong CMD: `setup.bat`). Script sẽ tự động tạo môi trường ảo Python (`venv`), cài đặt toàn bộ dependencies backend và frontend.
 2. **Khởi động ứng dụng:** Click đúp vào file [start.bat](file:///c:/Users/Administrator/Downloads/fakenews_url/fakenews_url/start.bat). Script sẽ kích hoạt cùng lúc Backend (cổng 8000), Frontend (cổng 5173) và tự động mở trình duyệt web.
