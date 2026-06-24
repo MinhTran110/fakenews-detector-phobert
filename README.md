@@ -36,7 +36,18 @@ fakenews_url/
 
 ---
 
-## Chạy nhanh
+## Chạy nhanh trên Windows (Khuyên dùng)
+
+Dự án đã hỗ trợ sẵn các file script `.bat` giúp cài đặt và kích hoạt tự động trên Windows:
+
+1. **Cài đặt lần đầu:** Click đúp vào file [setup.bat](file:///c:/Users/Administrator/Downloads/fakenews_url/fakenews_url/setup.bat) (hoặc chạy trong CMD: `setup.bat`). Script sẽ tự động tạo môi trường ảo Python (`venv`), cài đặt toàn bộ dependencies backend và frontend.
+2. **Khởi động ứng dụng:** Click đúp vào file [start.bat](file:///c:/Users/Administrator/Downloads/fakenews_url/fakenews_url/start.bat). Script sẽ kích hoạt cùng lúc Backend (cổng 8000), Frontend (cổng 5173) và tự động mở trình duyệt web.
+3. **Dừng ứng dụng:** Click đúp vào file [stop.bat](file:///c:/Users/Administrator/Downloads/fakenews_url/fakenews_url/stop.bat) để tắt nhanh các server đang chạy ngầm.
+4. **Chạy kiểm thử:** Click đúp vào file [test.bat](file:///c:/Users/Administrator/Downloads/fakenews_url/fakenews_url/test.bat) để chạy bộ kiểm thử tự động (Pytest).
+
+---
+
+## Chạy thủ công (Từng phần)
 
 ### Backend
 
