@@ -1,0 +1,282 @@
+/* src/App.module.css */
+
+.ambientGlow {
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 92, 252, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+.header {
+  padding: 52px 0 36px;
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 99px;
+  background: rgba(200, 245, 71, 0.08);
+  border: 1px solid rgba(200, 245, 71, 0.18);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+.title {
+  font-size: clamp(30px, 5.5vw, 48px);
+  font-weight: 800;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #f0eff8 30%, #6b6a7e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 14px;
+}
+
+.description {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* Card */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 16px 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.activeTabBtn {
+  border-bottom: 2px solid var(--accent);
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.cardBody {
+  padding: 28px;
+}
+
+/* Common form elements */
+.label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--fg);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.textarea {
+  min-height: 180px;
+  resize: vertical;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.7;
+}
+
+.button {
+  margin-top: 16px;
+  width: 100%;
+  padding: 14px 0;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  font-family: 'Syne', sans-serif;
+}
+
+.buttonDisabled {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* Helpers */
+.flexRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.quickFillList {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.quickFillLabel {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.quickFillBadge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+
+.sliderContainer {
+  margin-top: 16px;
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sliderLabel {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.sliderVal {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.slider {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.errorAlert {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 10px;
+  font-size: 13px;
+  color: #ef4444;
+}
+
+.charCount {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.charWarning {
+  font-size: 11px;
+  color: #f97316;
+}
+
+.spinnerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 36px 0;
+}
+
+.spinnerCircle {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+.spinnerMsg {
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.footer {
+  margin-top: 36px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.footerStrong {
+  color: var(--fg);
+}
+
+.footerSpan {
+  opacity: 0.6;
+}
+
+.footerDisclaimer {
+  margin-top: 4px;
+  opacity: 0.5;
+  font-size: 11px;
+}
